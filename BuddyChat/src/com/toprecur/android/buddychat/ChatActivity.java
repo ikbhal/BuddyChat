@@ -40,7 +40,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	String otherUserId;
 	String otherChannelName;
 	String userIds[];
-	MyCustomReceiver receiver;
+	BuddyChatReceiver receiver;
 
 	// MessageAdapter mAdapter;
 	@Override
@@ -68,7 +68,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		chatList.setAdapter(mAdapter);
 		chatList.setOnItemClickListener(this);
 
-		registerReceiver();
+		//registerReceiver();
 		
 		updateData();
 
@@ -76,7 +76,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 
 	public void registerReceiver() {
 		// Registering receiver
-		receiver = new MyCustomReceiver(new MyHandler()); 
+		receiver = new BuddyChatReceiver(new MyHandler()); 
 		registerReceiver(receiver, new IntentFilter(
 				"com.toprecur.android.buddychat.UPDATE_STATUS")); // Register
 		
@@ -89,19 +89,19 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unRegisterReceiver();
+		//unRegisterReceiver();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		//unRegisterReceiver();
+		unRegisterReceiver();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//registerReceiver();
+		registerReceiver();
 	}
 
 	@Override
@@ -136,19 +136,19 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 			push.setChannel(otherChannelName);
 			push.setMessage(message);
 
-//			JSONObject data = null;
-//			try {
-//				data = new JSONObject(
-//						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
-//								+ ",\"from\": \"" + currentUserId + "\""
-//								+ ",\"to\": \"" + otherUserId + "\""
-//								+ ",\"alert\" : \"" + message + "\""
-//								+ ",\"title\" : \"" + message + "\"" + "}");
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//
-//			push.setData(data);
+			JSONObject data = null;
+			try {
+				data = new JSONObject(
+						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
+								+ ",\"from\": \"" + currentUserId + "\""
+								+ ",\"to\": \"" + otherUserId + "\""
+								+ ",\"alert\" : \"" + message + "\""
+								+ ",\"title\" : \"" + message + "\"" + "}");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			push.setData(data);
 			push.sendInBackground();
 
 			Log.d(TAG, "push sent");
@@ -202,7 +202,6 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	public class MyHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			String message = msg.getData().getString("message");
 

@@ -11,12 +11,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-public class MyCustomReceiver extends BroadcastReceiver {
+public class BuddyChatReceiver extends BroadcastReceiver {
 	private static final String TAG = "MyCustomReceiver";
 
 	Handler handler;
 
-	public MyCustomReceiver(Handler handler) {
+	public BuddyChatReceiver(){
+		super();
+	}
+	
+	public BuddyChatReceiver(Handler handler) {
+		this();
 		this.handler = handler;
 	}
 
@@ -30,7 +35,7 @@ public class MyCustomReceiver extends BroadcastReceiver {
 			String messageText = "message:" + json.getString("title");
 					
 			Log.d(TAG, "got action " + action + " on channel " + channel
-					+ " with:");
+					+ " with:" + messageText);
 			Message msg = handler.obtainMessage();
 			Bundle b = new Bundle();
 			b.putString("message", messageText);

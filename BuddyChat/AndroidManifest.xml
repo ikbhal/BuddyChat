@@ -51,7 +51,7 @@
         </activity>
 
         <service android:name="com.parse.PushService" />
-
+        
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -69,6 +69,7 @@
                 <category android:name="com.toprecur.android.buddychat" />
             </intent-filter>
         </receiver>
+        
     </application>
 
 </manifest>
