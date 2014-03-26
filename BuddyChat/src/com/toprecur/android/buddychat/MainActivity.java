@@ -29,18 +29,12 @@ public class MainActivity extends ListActivity {
 			startActivity(intent);
 			finish();
 		}else {
-			/*
-			//Subscribe to the channel.
-			String channelName = "channel" + currentUser.getObjectId();
-			PushService.subscribe(this, channelName, ChatActivity.class);
-			*/
 			
 			// Subscribe to the channel.
 			String channelName = "channel"
 					+ ParseUser.getCurrentUser().getObjectId();
-			channelName ="channel";
-			PushService.subscribe(this, channelName, MainActivity.class);
-
+			PushService.subscribe(this, channelName, ChatActivity.class);
+			
 			
 			mainAdapter = new ParseQueryAdapter<ParseUser>(this, ParseUser.class);
 			mainAdapter.setTextKey("username");

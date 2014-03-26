@@ -21,16 +21,12 @@ public class BuddyChatApplication extends Application {
 		ParseACL defaultACL = new ParseACL();
 		ParseACL.setDefaultACL(defaultACL, true);
 		
-		PushService.setDefaultPushCallback(this, MainActivity.class);
+		PushService.setDefaultPushCallback(this, ChatActivity.class);
 
 		// Save the current Installation to Parse.
 		ParseInstallation installation = ParseInstallation
 				.getCurrentInstallation();
 		installation.saveInBackground();
-		
-		String channelName = null;
-		channelName ="channel";
-		PushService.subscribe(this, channelName, MainActivity.class);
 		
 	}
 

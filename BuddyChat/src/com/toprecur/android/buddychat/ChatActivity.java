@@ -53,6 +53,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		Intent currentIntent = getIntent();
 		otherUserId = currentIntent.getExtras().getString("otherUserId");
 		otherChannelName = "channel" + otherUserId;
+		
 		// Set the current UserId
 		currentUserId = ParseUser.getCurrentUser().getObjectId();
 
@@ -68,13 +69,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		chatList.setOnItemClickListener(this);
 
 		registerReceiver();
-
-//		// Subscribe to the channel.
-//		String channelName = "channel"
-//				+ ParseUser.getCurrentUser().getObjectId();
-//		channelName ="channel";
-//		PushService.subscribe(this, channelName, ChatActivity.class);
-
+		
 		updateData();
 
 	}
@@ -135,24 +130,25 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 			// Insert into adapter
 			mAdapter.insert(t, 0);
 
+			
 			// send push notfication
 			ParsePush push = new ParsePush();
 			push.setChannel(otherChannelName);
 			push.setMessage(message);
 
-			JSONObject data = null;
-			try {
-				data = new JSONObject(
-						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
-								+ ",\"from\": \"" + currentUserId + "\""
-								+ ",\"to\": \"" + otherUserId + "\""
-								+ ",\"alert\" : \"" + message + "\""
-								+ ",\"title\" : \"" + message + "\"" + "}");
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			push.setData(data);
+//			JSONObject data = null;
+//			try {
+//				data = new JSONObject(
+//						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
+//								+ ",\"from\": \"" + currentUserId + "\""
+//								+ ",\"to\": \"" + otherUserId + "\""
+//								+ ",\"alert\" : \"" + message + "\""
+//								+ ",\"title\" : \"" + message + "\"" + "}");
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//
+//			push.setData(data);
 			push.sendInBackground();
 
 			Log.d(TAG, "push sent");
