@@ -32,7 +32,7 @@ public class BuddyChatReceiver extends BroadcastReceiver {
 			String channel = intent.getExtras().getString("com.parse.Channel");
 			JSONObject json = new JSONObject(intent.getExtras().getString(
 					"com.parse.Data"));
-			String messageText = "message:" + json.getString("title");
+			String messageText = json.getString("title");
 					
 			Log.d(TAG, "got action " + action + " on channel " + channel
 					+ " with:" + messageText);

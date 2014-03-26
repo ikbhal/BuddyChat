@@ -3,6 +3,7 @@ package com.toprecur.android.buddychat;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +15,7 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 
 public class MainActivity extends ListActivity {
-
+	private static final String TAG = MainActivity.class.getName();
 	private ParseQueryAdapter<ParseUser> mainAdapter;
 
 	@Override
@@ -25,8 +26,9 @@ public class MainActivity extends ListActivity {
 
 		ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser == null) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
+			//Intent intent = new Intent(this, LoginActivity.class);
+			//startActivity(intent);
+			Log.d(TAG, "User should not be null as it is anonymous user.");
 			finish();
 		}else {
 			

@@ -32,6 +32,7 @@ import com.parse.ParseUser;
 
 public class ChatActivity extends Activity implements OnItemClickListener {
 	private static final String TAG = ChatActivity.class.getName();
+	public static final String BUDDY_CHAT_PUSH_ACTION = "com.toprecur.android.buddychat.UPDATE_STATUS";
 	EditText chatInput;
 	Button sendButton;
 	ListView chatList;
@@ -47,49 +48,79 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_chat);
-
-		// Make channel name out of other user id.
-		Intent currentIntent = getIntent();
-		otherUserId = currentIntent.getExtras().getString("otherUserId");
-		otherChannelName = "channel" + otherUserId;
-		
-		// Set the current UserId
-		currentUserId = ParseUser.getCurrentUser().getObjectId();
-
-		// set the user ids array
-		userIds = new String[] { currentUserId, otherUserId };
-		
 		ParseAnalytics.trackAppOpened(getIntent());
 
-		chatInput = (EditText) findViewById(R.id.chat_input);
-		chatList = (ListView) findViewById(R.id.chat_list);
-		mAdapter = new MessageAdapter(this, new ArrayList<ChatMessage>());
-		chatList.setAdapter(mAdapter);
-		chatList.setOnItemClickListener(this);
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		if (currentUser == null) {
+//			Intent intent = new Intent(this, LoginActivity.class);
+//			startActivity(intent);
+			Log.d(TAG, "User should not be null as it is anonymous user.");
+			finish();
+		} else {
 
-		//registerReceiver();
+			setContentView(R.layout.activity_chat);
+
+			// Make channel name out of other user id.
+			Intent currentIntent = getIntent();
+			String action = currentIntent.getAction();
+
+			otherUserId = currentIntent.getExtras()
+					.getString("otherUserId");
+			// Open with Parse Push Notification
+			if (otherUserId == null) {
+				String parseData = currentIntent.getExtras().getString(
+						"com.parse.Data");
+				try {
+					JSONObject jsonObj = new JSONObject(parseData);
+					otherUserId = jsonObj.getString("from");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} 
+			setOtherUser(otherUserId);
+
+			// Set the current UserId
+			currentUserId = ParseUser.getCurrentUser().getObjectId();
+
+			// set the user ids array
+			userIds = new String[] { currentUserId, otherUserId };
 		
+			chatInput = (EditText) findViewById(R.id.chat_input);
+			chatList = (ListView) findViewById(R.id.chat_list);
+			mAdapter = new MessageAdapter(this, new ArrayList<ChatMessage>());
+			chatList.setAdapter(mAdapter);
+			chatList.setOnItemClickListener(this);
+
+		}
 		updateData();
 
 	}
 
+	/**
+	 * Helper method to set other chat user id.
+	 * 
+	 * @param otherUserId
+	 */
+	private void setOtherUser(String otherUserId) {
+		this.otherUserId = otherUserId;
+		otherChannelName = "channel" + otherUserId;
+	}
+
 	public void registerReceiver() {
 		// Registering receiver
-		receiver = new BuddyChatReceiver(new MyHandler()); 
-		registerReceiver(receiver, new IntentFilter(
-				"com.toprecur.android.buddychat.UPDATE_STATUS")); // Register
-		
+		receiver = new BuddyChatReceiver(new MyHandler());
+		registerReceiver(receiver, new IntentFilter(BUDDY_CHAT_PUSH_ACTION)); // Register
+
 	}
-	
-	public void unRegisterReceiver(){
+
+	public void unRegisterReceiver() {
 		unregisterReceiver(receiver);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		//unRegisterReceiver();
+		// unRegisterReceiver();
 	}
 
 	@Override
@@ -130,7 +161,6 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 			// Insert into adapter
 			mAdapter.insert(t, 0);
 
-			
 			// send push notfication
 			ParsePush push = new ParsePush();
 			push.setChannel(otherChannelName);
@@ -138,12 +168,11 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 
 			JSONObject data = null;
 			try {
-				data = new JSONObject(
-						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
-								+ ",\"from\": \"" + currentUserId + "\""
-								+ ",\"to\": \"" + otherUserId + "\""
-								+ ",\"alert\" : \"" + message + "\""
-								+ ",\"title\" : \"" + message + "\"" + "}");
+				data = new JSONObject("{\"action\": \""
+						+ BUDDY_CHAT_PUSH_ACTION + "\"" + ",\"from\": \""
+						+ currentUserId + "\"" + ",\"to\": \"" + otherUserId
+						+ "\"" + ",\"alert\" : \"" + message + "\""
+						+ ",\"title\" : \"" + message + "\"" + "}");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -161,7 +190,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		ParseQuery<ChatMessage> query = ParseQuery.getQuery(ChatMessage.class);
 		query.whereContainedIn("to", Arrays.asList(userIds));
 		query.setCachePolicy(CachePolicy.CACHE_THEN_NETWORK);
-		// query.orderByDescending("createdAt");
+		query.orderByDescending("createdAt");
 		query.findInBackground(new FindCallback<ChatMessage>() {
 			@Override
 			public void done(List<ChatMessage> tasks,
@@ -198,7 +227,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		startActivity(contactIntent);
 		finish();
 	}
-	
+
 	public class MyHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
@@ -215,7 +244,5 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 	}
-	
-
 
 }

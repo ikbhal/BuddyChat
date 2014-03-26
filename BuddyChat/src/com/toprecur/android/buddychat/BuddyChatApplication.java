@@ -6,6 +6,7 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.PushService;
 
 public class BuddyChatApplication extends Application {
@@ -21,6 +22,7 @@ public class BuddyChatApplication extends Application {
 		ParseACL defaultACL = new ParseACL();
 		ParseACL.setDefaultACL(defaultACL, true);
 		
+		
 		PushService.setDefaultPushCallback(this, ChatActivity.class);
 
 		// Save the current Installation to Parse.
@@ -28,6 +30,10 @@ public class BuddyChatApplication extends Application {
 				.getCurrentInstallation();
 		installation.saveInBackground();
 		
+		// Anonymous user.
+		ParseUser.enableAutomaticUser();
+		ParseUser.getCurrentUser().increment("RunCount");
+		ParseUser.getCurrentUser().saveInBackground();
 	}
 
 }
