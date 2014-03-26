@@ -7,14 +7,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +29,6 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseQuery.CachePolicy;
 import com.parse.ParseUser;
-import com.parse.PushService;
 
 public class ChatActivity extends Activity implements OnItemClickListener {
 	private static final String TAG = ChatActivity.class.getName();
@@ -75,11 +69,11 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 
 		registerReceiver();
 
-		// Subscribe to the channel.
-		String channelName = "channel"
-				+ ParseUser.getCurrentUser().getObjectId();
-		channelName ="channel";
-		PushService.subscribe(this, channelName, ChatActivity.class);
+//		// Subscribe to the channel.
+//		String channelName = "channel"
+//				+ ParseUser.getCurrentUser().getObjectId();
+//		channelName ="channel";
+//		PushService.subscribe(this, channelName, ChatActivity.class);
 
 		updateData();
 
@@ -89,7 +83,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 		// Registering receiver
 		receiver = new MyCustomReceiver(new MyHandler()); 
 		registerReceiver(receiver, new IntentFilter(
-				"com.toprecur.android.fitsome.UPDATE_STATUS")); // Register
+				"com.toprecur.android.buddychat.UPDATE_STATUS")); // Register
 		
 	}
 	
@@ -149,7 +143,7 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 			JSONObject data = null;
 			try {
 				data = new JSONObject(
-						"{\"action\": \"com.toprecur.android.fitsome.UPDATE_STATUS\""
+						"{\"action\": \"com.toprecur.android.buddychat.UPDATE_STATUS\""
 								+ ",\"from\": \"" + currentUserId + "\""
 								+ ",\"to\": \"" + otherUserId + "\""
 								+ ",\"alert\" : \"" + message + "\""

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.parse.ParseAnalytics;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class MainActivity extends ListActivity {
 
@@ -33,6 +34,13 @@ public class MainActivity extends ListActivity {
 			String channelName = "channel" + currentUser.getObjectId();
 			PushService.subscribe(this, channelName, ChatActivity.class);
 			*/
+			
+			// Subscribe to the channel.
+			String channelName = "channel"
+					+ ParseUser.getCurrentUser().getObjectId();
+			channelName ="channel";
+			PushService.subscribe(this, channelName, MainActivity.class);
+
 			
 			mainAdapter = new ParseQueryAdapter<ParseUser>(this, ParseUser.class);
 			mainAdapter.setTextKey("username");
