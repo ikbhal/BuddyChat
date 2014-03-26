@@ -19,10 +19,7 @@ public class BuddyChatApplication extends Application {
 		ParseObject.registerSubclass(ChatMessage.class);
 		
 		Parse.initialize(this, APP_ID, CLIENT_ID);
-		ParseACL defaultACL = new ParseACL();
-		ParseACL.setDefaultACL(defaultACL, true);
-		
-		
+
 		PushService.setDefaultPushCallback(this, ChatActivity.class);
 
 		// Save the current Installation to Parse.
@@ -32,8 +29,14 @@ public class BuddyChatApplication extends Application {
 		
 		// Anonymous user.
 		ParseUser.enableAutomaticUser();
-		ParseUser.getCurrentUser().increment("RunCount");
-		ParseUser.getCurrentUser().saveInBackground();
+		if (ParseUser.getCurrentUser().getObjectId() == null) {
+			ParseUser.getCurrentUser().increment("RunCount");
+			ParseUser.getCurrentUser().saveInBackground();
+		}
+		
+		ParseACL defaultACL = new ParseACL();
+		ParseACL.setDefaultACL(defaultACL, true);
+	
 	}
 
 }

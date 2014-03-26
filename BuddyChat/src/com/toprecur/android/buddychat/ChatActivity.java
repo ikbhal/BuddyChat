@@ -25,6 +25,7 @@ import android.widget.ListView;
 
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseQuery.CachePolicy;
@@ -187,15 +188,32 @@ public class ChatActivity extends Activity implements OnItemClickListener {
 	}
 
 	public void updateData() {
-		ParseQuery<ChatMessage> query = ParseQuery.getQuery(ChatMessage.class);
-		query.whereContainedIn("to", Arrays.asList(userIds));
-		query.setCachePolicy(CachePolicy.CACHE_THEN_NETWORK);
+		
+		// From Query where "from" fields matches with current user Id
+		ParseQuery<ChatMessage> fromQuery = ParseQuery.getQuery(ChatMessage.class);
+		fromQuery.whereEqualTo("from", currentUserId);
+		
+		// To Query where "to" field matches with "to" field
+		ParseQuery<ChatMessage> toQuery = ParseQuery.getQuery(ChatMessage.class);
+		toQuery.whereEqualTo("to", currentUserId);
+	
+		
+		List<ParseQuery<ChatMessage>> queries = new ArrayList<ParseQuery<ChatMessage>>();
+		queries.add(fromQuery);
+		queries.add(toQuery);
+		
+		// Compound query where current user id in from or to order by create At descening.
+		ParseQuery<ChatMessage> query = ParseQuery.or(queries);
 		query.orderByDescending("createdAt");
+		
+		query.setCachePolicy(CachePolicy.CACHE_THEN_NETWORK);
+		
 		query.findInBackground(new FindCallback<ChatMessage>() {
 			@Override
 			public void done(List<ChatMessage> tasks,
 					com.parse.ParseException error) {
 				if (tasks != null) {
+					Log.d(TAG, "tasks:" + tasks);
 					mAdapter.clear();
 					mAdapter.addAll(tasks);
 				}
