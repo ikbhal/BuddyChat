@@ -26,6 +26,7 @@ public class MainActivity extends ListActivity {
 
 		ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser == null) {
+			//wwww
 			//Intent intent = new Intent(this, LoginActivity.class);
 			//startActivity(intent);
 			Log.d(TAG, "User should not be null as it is anonymous user.");
