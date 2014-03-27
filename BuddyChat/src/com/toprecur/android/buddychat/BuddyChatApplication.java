@@ -17,8 +17,8 @@ public class BuddyChatApplication extends Application {
 	
 	public static final String TAG = BuddyChatApplication.class.getName();
 	
-	static final String APP_ID = "SfuK8lMGH8wTwEWj05kHxu2S1B3xfdUgcPYiHMBY";
-	static final String CLIENT_ID = "6xMA6XXzUuYSA8zxiLOEbyJvVc1iPPwrSNrLw9rb";
+	static final String APP_ID = "LkrUffG6SuSw82ZEVCCMDzzIdyupj8BFbjsz7PAD";
+	static final String CLIENT_ID = "VAwp1BXZHcWAAfCo96q0Bqn0ZzrX5LgFgmLkk5xU";
 
 	@Override
 	public void onCreate() {
