@@ -21,52 +21,52 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		ParseAnalytics.trackAppOpened(getIntent());
 
 		ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser == null) {
-			//Intent intent = new Intent(this, LoginActivity.class);
-			//startActivity(intent);
+			// Intent intent = new Intent(this, LoginActivity.class);
+			// startActivity(intent);
 			Log.d(TAG, "User should not be null as it is anonymous user.");
 			finish();
-		}else {
-			
+		} else {
+
 			// Subscribe to the channel.
 			String channelName = "channel"
 					+ ParseUser.getCurrentUser().getObjectId();
 			PushService.subscribe(this, channelName, ChatActivity.class);
-			
-			
-			mainAdapter = new ParseQueryAdapter<ParseUser>(this, ParseUser.class);
+
+			mainAdapter = new ParseQueryAdapter<ParseUser>(this,
+					ParseUser.class);
 			mainAdapter.setTextKey("username");
 			mainAdapter.setImageKey("photo");
-			
+
 			setListAdapter(mainAdapter);
 		}
-		
+
 	}
 
-	public void logout(){
+	public void logout() {
 		ParseUser.getCurrentUser().logOut();
 		Intent intent = new Intent(this, LoginActivity.class);
 		startActivity(intent);
 		finish();
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		ParseUser otherUser = mainAdapter.getItem(position);
 		String otherUserId = otherUser.getObjectId();
-		
+
 		Intent chatIntent = new Intent(this, ChatActivity.class);
 		chatIntent.putExtra("otherUserId", otherUserId);
 		startActivity(chatIntent);
 		finish();
 	}
-  
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -81,9 +81,32 @@ public class MainActivity extends ListActivity {
 			logout();
 			break;
 		}
+		case R.id.action_contacts: {
+			goToContacts();
+			break;
+		}
+		case R.id.action_profile: {
+			goToProfile();
+			break;
+		}
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Helper function to open contact activity.
+	 */
+	private void goToContacts() {
+		Intent contactIntent = new Intent(this, ContactActivity.class);
+		startActivity(contactIntent);
+	}
+	
+	/**
+	 * Helper  function to open profile activity.
+	 */
+	private void goToProfile() {
+		Intent contactIntent = new Intent(this, ProfileActivity.class);
+		startActivity(contactIntent);
+	}
 
 }
