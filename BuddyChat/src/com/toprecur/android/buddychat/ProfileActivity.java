@@ -9,9 +9,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseQuery;
+import com.parse.ParseQuery.CachePolicy;
 import com.parse.ParseUser;
 
 public class ProfileActivity extends Activity {
@@ -39,42 +41,67 @@ public class ProfileActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// Toast.makeText(ProfileActivity.this, "Profile saved",
-				// Toast.LENGTH_SHORT).show();
-				handlePrfileSave();
+				handleProfileSave();
 			}
 		});
+		
+		// load profile.
+		loadProfile();
 	}
 
 	/**
 	 * Helper function to save Profile.
 	 */
-	private void handlePrfileSave() {
+	private void handleProfileSave() {
 		// if there is no profile => save it
 		// if exist , retrieve it, and save it.
-
-		// Query to fetch profile for the current user.
+		if(currentProfile != null) {
+			updateProfile(currentProfile);
+		} else {
+			createProfile();
+		}
+	
+	}
+	
+	/**
+	 * Helper function to load profile
+	 */
+	private void loadProfile() {
+		
 		ParseQuery<Profile> query = ParseQuery.getQuery(Profile.class);
 		query.whereEqualTo("user", ParseUser.getCurrentUser());
-
+		query.setCachePolicy(CachePolicy.CACHE_THEN_NETWORK);
 		// Get prfile.
 		query.findInBackground(new FindCallback<Profile>() {
 			@Override
 			public void done(final List<Profile> profiles,
 					com.parse.ParseException error) {
 
-				// Toast.makeText(ProfileActivity.this,
-				// "inside retrieve profile" + profiles, Toast.LENGTH_SHORT);
+				Toast.makeText(ProfileActivity.this, "Loaded profile", Toast.LENGTH_SHORT);
 				Log.d(TAG, "inside retrieve profile" + profiles);
 				if (profiles != null && profiles.size() > 0) {
 					currentProfile = profiles.get(0);
-					updateProfile(currentProfile);
-				} else {
-					createProfile();
+					updateProfileForm();
 				}
 			}
 		});
-
+	}
+	
+	/**
+	 * Helper function to update profile form from current profile.
+	 */
+	private void updateProfileForm() {
+		if(currentProfile == null){
+			Log.e(TAG, "No current profile");
+			return;
+		}
+		
+		// Update profile form fields from current profile.
+		editName.setText(currentProfile.getName());
+		editPhoneNo.setText(currentProfile.getPhoneNo());
+		editEmail.setText(currentProfile.getEmail());
+		
+		Log.d(TAG, "Updated profile form.");
 	}
 
 	/**

@@ -1,15 +1,22 @@
 package com.toprecur.android.buddychat;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseAnonymousUtils;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.PushService;
 
 public class BuddyChatApplication extends Application {
+	
+	public static final String TAG = BuddyChatApplication.class.getName();
+	
 	static final String APP_ID = "SfuK8lMGH8wTwEWj05kHxu2S1B3xfdUgcPYiHMBY";
 	static final String CLIENT_ID = "6xMA6XXzUuYSA8zxiLOEbyJvVc1iPPwrSNrLw9rb";
 
@@ -33,6 +40,18 @@ public class BuddyChatApplication extends Application {
 		
 		// Anonymous user.
 		ParseUser.enableAutomaticUser();
+		ParseAnonymousUtils.logIn(new LogInCallback() {
+			  @Override
+			  public void done(ParseUser user, ParseException e) {
+			    if (e != null) {
+			      Log.d(TAG, "Anonymous login failed.");
+			    } else {
+			      Log.d(TAG, "Anonymous user logged in.");
+			    }
+			  }
+			});
+
+
 //		if (ParseUser.getCurrentUser().getObjectId() == null) {
 //			ParseUser.getCurrentUser().increment("RunCount");
 //			ParseUser.getCurrentUser().saveInBackground();
