@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQuery.CachePolicy;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class ProfileActivity extends Activity {
 
@@ -118,7 +120,21 @@ public class ProfileActivity extends Activity {
 
 		// Save the profile in background.
 		Log.d(TAG, "Updating profile.");
-		profile.saveInBackground();
+		profile.saveInBackground(new SaveCallback() {
+
+			@Override
+			public void done(ParseException e) {
+				if (e == null) {
+					Log.d(TAG, "save profile.");
+				} else {
+					Toast.makeText(
+							ProfileActivity.this,
+							"Error saving: " + e.getMessage(),
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+
+		});
 	}
 
 	/**

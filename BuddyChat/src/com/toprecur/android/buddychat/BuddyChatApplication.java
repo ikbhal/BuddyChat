@@ -27,6 +27,7 @@ public class BuddyChatApplication extends Application {
 		// Register Pares sub classes.
 		ParseObject.registerSubclass(ChatMessage.class);
 		ParseObject.registerSubclass(Profile.class);
+		ParseObject.registerSubclass(Contact.class);
 		
 		// Initialize parse.
 		Parse.initialize(this, APP_ID, CLIENT_ID);
@@ -38,26 +39,15 @@ public class BuddyChatApplication extends Application {
 				.getCurrentInstallation();
 		installation.saveInBackground();
 		
+		/*
 		// Anonymous user.
 		ParseUser.enableAutomaticUser();
-		ParseAnonymousUtils.logIn(new LogInCallback() {
-			  @Override
-			  public void done(ParseUser user, ParseException e) {
-			    if (e != null) {
-			      Log.d(TAG, "Anonymous login failed.");
-			    } else {
-			      Log.d(TAG, "Anonymous user logged in.");
-			    }
-			  }
-			});
-
-
-//		if (ParseUser.getCurrentUser().getObjectId() == null) {
-//			ParseUser.getCurrentUser().increment("RunCount");
-//			ParseUser.getCurrentUser().saveInBackground();
-//		}
-		
+		ParseUser.getCurrentUser().increment("RunCount");
+		ParseUser.getCurrentUser().saveInBackground();
+		*/
 		ParseACL defaultACL = new ParseACL();
+		defaultACL.setPublicReadAccess(true);
+
 		ParseACL.setDefaultACL(defaultACL, true);
 	
 	}
